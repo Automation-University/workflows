@@ -181,22 +181,26 @@ def process_validator_response(validator_response):
 
 
 def main():
-    login()
-    set_headers()
-    # id of original question from library
-    qid = sys.argv[1].split('-')[0]
-    print(f"supplied qid is {qid}")
-    # id of clone of question
-    exists, question = question_exists(qid)
+    try:
+        login()
+        set_headers()
+        # id of original question from library
+        qid = sys.argv[1].split('-')[0]
+        print(f"supplied qid is {qid}")
+        # id of clone of question
+        exists, question = question_exists(qid)
 
-    if not exists:
-        question = clone_question(qid)
-    print('question copy has id', question['id'])
-    tag_question(question, qid)
-    update_project_zip(question)
-    task_id = validate_question(question)
-    validator_response = check_validation_status(task_id)
-    process_validator_response(validator_response['response'])
+        if not exists:
+            question = clone_question(qid)
+        print('question copy has id', question['id'])
+        tag_question(question, qid)
+        update_project_zip(question)
+        task_id = validate_question(question)
+        validator_response = check_validation_status(task_id)
+        process_validator_response(validator_response['response'])
+    except Exception as e:
+        print(e)
+        os._exit(1)
 
 
 if __name__ == "__main__":
