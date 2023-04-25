@@ -1,0 +1,23 @@
+name: Validate Question
+on:
+  workflow_dispatch:
+  workflow_call:
+env:
+  HACKERRANK_EMAIL: ${{ secrets.HACKERRANK_EMAIL }}
+  HACKERRANK_PASSWORD: ${{ secrets.HACKERRANK_PASSWORD }}
+  HACKERRANK_STACKS: ${{ vars.HACKERRANK_STACKS }}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: run script
+        uses: actions/setup-python@v4 
+        with:
+          python-version: 'pypy3.9'
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+      - run: zip -r project.zip . -x '*.git*'
+      - run: pip install -r ./.github/scripts/requirements.txt
+      - run: python -u ./.github/scripts/validate.py ${{ github.event.repository.name }}
